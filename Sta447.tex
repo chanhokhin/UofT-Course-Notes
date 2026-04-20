@@ -15127,4 +15127,365 @@ Then the remainder is an It\^o integral, hence a martingale.
 If you want to use optional stopping, the real question is never just ``is $M_t$ a martingale?'' The real question is whether the stopped family is integrable enough for OST to be valid.
 \end{keyformula}
 
+\section{Common SDEs}
+
+This section collects several of the most common stochastic differential equations that appear in probability, stochastic calculus, and mathematical finance. For each one, we state the SDE, give its explicit solution when available, and explain the main idea behind it.
+
+\subsection{General form of an SDE}
+
+A one-dimensional stochastic differential equation usually has the form
+\[
+dX_t = b(t,X_t)\,dt + \sigma(t,X_t)\,dB_t,
+\]
+where
+\begin{itemize}[leftmargin=2em]
+    \item \(b(t,X_t)\) is called the \emph{drift},
+    \item \(\sigma(t,X_t)\) is called the \emph{diffusion coefficient},
+    \item \((B_t)_{t\ge 0}\) is a standard Brownian motion.
+\end{itemize}
+
+The drift describes the deterministic trend of the process, while the diffusion term describes the random fluctuation.
+
+\medskip
+
+\noindent
+In general, not every SDE can be solved explicitly. However, there are several standard examples that appear repeatedly and are important to know well.
+
+\subsection{Brownian motion}
+
+The simplest SDE is
+\[
+dX_t = dB_t,
+\qquad X_0=x.
+\]
+
+Its solution is simply
+\[
+X_t = x + B_t.
+\]
+
+So Brownian motion itself is the most basic solution of an SDE.
+
+\medskip
+
+\noindent
+Since \(B_t\sim N(0,t)\), we have
+\[
+X_t \sim N(x,t).
+\]
+
+\subsection{Brownian motion with drift}
+
+A slightly more general example is
+\[
+dX_t = \mu\,dt + \sigma\,dB_t,
+\qquad X_0=x,
+\]
+where \(\mu,\sigma\in\mathbb R\) are constants.
+
+Its solution is
+\[
+X_t = x + \mu t + \sigma B_t.
+\]
+
+Therefore
+\[
+X_t \sim N(x+\mu t,\sigma^2 t).
+\]
+
+\medskip
+
+\noindent
+This process behaves like Brownian motion, but with an additional deterministic trend \(\mu t\).
+
+\subsection{Geometric Brownian motion}
+
+One of the most important multiplicative models is
+\[
+dX_t = \mu X_t\,dt + \sigma X_t\,dB_t,
+\qquad X_0=x>0.
+\]
+
+This is called \emph{geometric Brownian motion}. It is the classical model for stock prices in the Black--Scholes theory.
+
+\begin{proposition}
+The solution of
+\[
+dX_t = \mu X_t\,dt + \sigma X_t\,dB_t,
+\qquad X_0=x>0,
+\]
+is
+\[
+X_t
+=
+x\exp\!\left(
+\left(\mu-\frac12\sigma^2\right)t+\sigma B_t
+\right).
+\]
+\end{proposition}
+
+\begin{proof}[Idea]
+Apply It\^o's formula to \(f(x)=\log x\). Then
+\[
+d(\log X_t)
+=
+\left(\mu-\frac12\sigma^2\right)dt+\sigma\,dB_t.
+\]
+Integrating both sides gives
+\[
+\log X_t
+=
+\log x+\left(\mu-\frac12\sigma^2\right)t+\sigma B_t.
+\]
+Exponentiating yields the result.
+\end{proof}
+
+\medskip
+
+\noindent
+This example is important because it shows the typical It\^o correction:
+\[
+\mu \quad \longrightarrow \quad \mu-\frac12\sigma^2
+\]
+after taking logarithms.
+
+\subsection{Exponential martingale}
+
+A closely related process is
+\[
+M_t := \exp\!\left(bB_t-\frac12 b^2 t\right),
+\qquad b\in\mathbb R.
+\]
+
+This process satisfies the SDE
+\[
+dM_t = bM_t\,dB_t,
+\qquad M_0=1.
+\]
+
+\begin{proposition}
+The process
+\[
+M_t = \exp\!\left(bB_t-\frac12 b^2 t\right)
+\]
+is a martingale.
+\end{proposition}
+
+\begin{proof}[Idea]
+Apply It\^o's formula to
+\[
+f(t,z)=\exp\!\left(bz-\frac12 b^2 t\right).
+\]
+The drift term cancels exactly, leaving
+\[
+dM_t=bM_t\,dB_t.
+\]
+Any process of the form
+\[
+M_t=M_0+\int_0^t H_s\,dB_s
+\]
+is a local martingale, and in this case it is in fact a true martingale.
+\end{proof}
+
+\subsection{Ornstein--Uhlenbeck process}
+
+A very important mean-reverting process is
+\[
+dX_t = \theta(\mu-X_t)\,dt + \sigma\,dB_t,
+\qquad \theta>0.
+\]
+
+Equivalently,
+\[
+dX_t = (-\theta X_t+\theta\mu)\,dt+\sigma\,dB_t.
+\]
+
+This is called the \emph{Ornstein--Uhlenbeck process}. The drift pulls the process back toward the level \(\mu\), so it is a standard model of mean reversion.
+
+\begin{proposition}
+The solution of
+\[
+dX_t = \theta(\mu-X_t)\,dt + \sigma\,dB_t,
+\qquad X_0=x,
+\]
+is
+\[
+X_t
+=
+\mu + e^{-\theta t}(x-\mu)
++ \sigma e^{-\theta t}\int_0^t e^{\theta s}\,dB_s.
+\]
+\end{proposition}
+
+\begin{proof}[Idea]
+Rewrite the SDE as
+\[
+dX_t + \theta X_t\,dt = \theta\mu\,dt+\sigma\,dB_t.
+\]
+Multiply by the integrating factor \(e^{\theta t}\). Then
+\[
+d(e^{\theta t}X_t)=\theta\mu e^{\theta t}\,dt+\sigma e^{\theta t}\,dB_t.
+\]
+Integrating from \(0\) to \(t\) and solving for \(X_t\) gives the formula above.
+\end{proof}
+
+\medskip
+
+\noindent
+From this representation, one can compute
+\[
+\mathbb E[X_t]
+=
+\mu+e^{-\theta t}(x-\mu),
+\]
+and
+\[
+\mathrm{Var}(X_t)
+=
+\sigma^2 e^{-2\theta t}\int_0^t e^{2\theta s}\,ds
+=
+\frac{\sigma^2}{2\theta}\bigl(1-e^{-2\theta t}\bigr).
+\]
+
+So the mean converges to \(\mu\), and the variance approaches the finite limit \(\sigma^2/(2\theta)\).
+
+\subsection{A linear SDE}
+
+A very common class of equations is the linear SDE
+\[
+dX_t = (aX_t+b)\,dt + (cX_t+d)\,dB_t.
+\]
+
+These are the stochastic analogues of first-order linear ODEs.
+
+\medskip
+
+\noindent
+The usual method is to multiply by a suitable integrating factor involving both \(t\) and \(B_t\), often of the form
+\[
+e^{\alpha t+\beta B_t}.
+\]
+Then one applies It\^o's product rule to simplify the equation.
+
+\medskip
+
+\noindent
+So for linear SDEs, the standard strategy is:
+\begin{quote}
+Choose an integrating factor, apply It\^o's product rule, and then integrate.
+\end{quote}
+
+\subsection{Cox--Ingersoll--Ross process}
+
+Another famous example is
+\[
+dX_t = \kappa(\theta-X_t)\,dt+\sigma\sqrt{X_t}\,dB_t.
+\]
+
+This is called the \emph{Cox--Ingersoll--Ross (CIR) process}. It is used in finance for modeling interest rates and volatility.
+
+\medskip
+
+\noindent
+Its diffusion coefficient depends on the current state:
+\[
+\sigma(X_t)=\sigma\sqrt{X_t}.
+\]
+So when \(X_t\) is close to \(0\), the random fluctuation becomes smaller.
+
+\medskip
+
+\noindent
+Unlike the earlier examples, the CIR process is not usually solved in introductory courses by direct explicit integration, but it is a standard model to remember.
+
+\subsection{A general diffusion}
+
+The most general form commonly studied in a first course is
+\[
+dX_t = b(X_t)\,dt+\sigma(X_t)\,dB_t,
+\qquad X_0=x.
+\]
+
+This is called a \emph{diffusion}. In this general setting:
+\begin{itemize}[leftmargin=2em]
+    \item explicit solutions are usually not available;
+    \item one studies existence and uniqueness of solutions;
+    \item one computes moments, distributions, or qualitative properties when possible.
+\end{itemize}
+
+\subsection{Common methods for solving SDEs}
+
+The most common techniques are the following.
+
+\begin{enumerate}[leftmargin=2em]
+    \item \textbf{Direct integration.}  
+    This works when the coefficients are simple, for example
+    \[
+    dX_t=\mu\,dt+\sigma\,dB_t.
+    \]
+
+    \item \textbf{It\^o's formula.}  
+    One transforms the process by choosing a suitable function \(f\) and studying \(f(X_t)\).  
+    This is the standard method for geometric Brownian motion, where one takes \(f(x)=\log x\).
+
+    \item \textbf{Integrating factor.}  
+    This is the main method for linear SDEs and Ornstein--Uhlenbeck type equations.
+
+    \item \textbf{Moment calculations.}  
+    Even if the SDE cannot be solved explicitly, one can often compute \(\mathbb E[X_t]\), \(\mathrm{Var}(X_t)\), or derive differential equations for moments.
+
+    \item \textbf{Numerical approximation.}  
+    If no closed form is available, one often uses the Euler--Maruyama scheme.
+\end{enumerate}
+
+\subsection{Summary}
+
+\begin{summarybox}
+The most common SDEs to know are:
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Brownian motion:}
+    \[
+    dX_t=dB_t.
+    \]
+
+    \item \textbf{Brownian motion with drift:}
+    \[
+    dX_t=\mu\,dt+\sigma\,dB_t.
+    \]
+
+    \item \textbf{Geometric Brownian motion:}
+    \[
+    dX_t=\mu X_t\,dt+\sigma X_t\,dB_t.
+    \]
+
+    \item \textbf{Exponential martingale:}
+    \[
+    dM_t=bM_t\,dB_t.
+    \]
+
+    \item \textbf{Ornstein--Uhlenbeck process:}
+    \[
+    dX_t=\theta(\mu-X_t)\,dt+\sigma\,dB_t.
+    \]
+
+    \item \textbf{Linear SDE:}
+    \[
+    dX_t=(aX_t+b)\,dt+(cX_t+d)\,dB_t.
+    \]
+
+    \item \textbf{CIR process:}
+    \[
+    dX_t=\kappa(\theta-X_t)\,dt+\sigma\sqrt{X_t}\,dB_t.
+    \]
+\end{itemize}
+
+The main tools for solving SDEs are:
+\begin{itemize}[leftmargin=2em]
+    \item It\^o's formula,
+    \item integrating factors,
+    \item conditional expectation and moment calculations,
+    \item and, when necessary, numerical methods.
+\end{itemize}
+\end{summarybox}
+
 \end{document}
